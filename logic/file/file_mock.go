@@ -5,6 +5,7 @@
 package file
 
 import (
+	context "context"
 	multipart "mime/multipart"
 	reflect "reflect"
 
@@ -36,51 +37,51 @@ func (m *MockLogic) EXPECT() *MockLogicMockRecorder {
 }
 
 // BatchMoveFiles mocks base method.
-func (m *MockLogic) BatchMoveFiles(userID uint, fileIDs []string, targetParentID string) error {
+func (m *MockLogic) BatchMoveFiles(ctx context.Context, userID uint, fileIDs []string, targetParentID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BatchMoveFiles", userID, fileIDs, targetParentID)
+	ret := m.ctrl.Call(m, "BatchMoveFiles", ctx, userID, fileIDs, targetParentID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // BatchMoveFiles indicates an expected call of BatchMoveFiles.
-func (mr *MockLogicMockRecorder) BatchMoveFiles(userID, fileIDs, targetParentID interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) BatchMoveFiles(ctx, userID, fileIDs, targetParentID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchMoveFiles", reflect.TypeOf((*MockLogic)(nil).BatchMoveFiles), userID, fileIDs, targetParentID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchMoveFiles", reflect.TypeOf((*MockLogic)(nil).BatchMoveFiles), ctx, userID, fileIDs, targetParentID)
 }
 
 // CreateFolder mocks base method.
-func (m *MockLogic) CreateFolder(userID uint, name string, parentID *string) error {
+func (m *MockLogic) CreateFolder(ctx context.Context, userID uint, name string, parentID *string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateFolder", userID, name, parentID)
+	ret := m.ctrl.Call(m, "CreateFolder", ctx, userID, name, parentID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // CreateFolder indicates an expected call of CreateFolder.
-func (mr *MockLogicMockRecorder) CreateFolder(userID, name, parentID interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) CreateFolder(ctx, userID, name, parentID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFolder", reflect.TypeOf((*MockLogic)(nil).CreateFolder), userID, name, parentID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFolder", reflect.TypeOf((*MockLogic)(nil).CreateFolder), ctx, userID, name, parentID)
 }
 
 // DeleteFileOrFolder mocks base method.
-func (m *MockLogic) DeleteFileOrFolder(userID uint, fileID string) error {
+func (m *MockLogic) DeleteFileOrFolder(ctx context.Context, userID uint, fileID string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteFileOrFolder", userID, fileID)
+	ret := m.ctrl.Call(m, "DeleteFileOrFolder", ctx, userID, fileID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteFileOrFolder indicates an expected call of DeleteFileOrFolder.
-func (mr *MockLogicMockRecorder) DeleteFileOrFolder(userID, fileID interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) DeleteFileOrFolder(ctx, userID, fileID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFileOrFolder", reflect.TypeOf((*MockLogic)(nil).DeleteFileOrFolder), userID, fileID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFileOrFolder", reflect.TypeOf((*MockLogic)(nil).DeleteFileOrFolder), ctx, userID, fileID)
 }
 
 // DownloadFile mocks base method.
-func (m *MockLogic) DownloadFile(fileID string) (*file.File, []byte, error) {
+func (m *MockLogic) DownloadFile(ctx context.Context, fileID string) (*file.File, []byte, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DownloadFile", fileID)
+	ret := m.ctrl.Call(m, "DownloadFile", ctx, fileID)
 	ret0, _ := ret[0].(*file.File)
 	ret1, _ := ret[1].([]byte)
 	ret2, _ := ret[2].(error)
@@ -88,90 +89,90 @@ func (m *MockLogic) DownloadFile(fileID string) (*file.File, []byte, error) {
 }
 
 // DownloadFile indicates an expected call of DownloadFile.
-func (mr *MockLogicMockRecorder) DownloadFile(fileID interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) DownloadFile(ctx, fileID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadFile", reflect.TypeOf((*MockLogic)(nil).DownloadFile), fileID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadFile", reflect.TypeOf((*MockLogic)(nil).DownloadFile), ctx, fileID)
 }
 
 // GetFileByID mocks base method.
-func (m *MockLogic) GetFileByID(fileID string) (*file.File, error) {
+func (m *MockLogic) GetFileByID(ctx context.Context, fileID string) (*file.File, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetFileByID", fileID)
+	ret := m.ctrl.Call(m, "GetFileByID", ctx, fileID)
 	ret0, _ := ret[0].(*file.File)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetFileByID indicates an expected call of GetFileByID.
-func (mr *MockLogicMockRecorder) GetFileByID(fileID interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) GetFileByID(ctx, fileID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileByID", reflect.TypeOf((*MockLogic)(nil).GetFileByID), fileID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileByID", reflect.TypeOf((*MockLogic)(nil).GetFileByID), ctx, fileID)
 }
 
 // GetFileIDPath mocks base method.
-func (m *MockLogic) GetFileIDPath(fileID string) (string, error) {
+func (m *MockLogic) GetFileIDPath(ctx context.Context, fileID string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetFileIDPath", fileID)
+	ret := m.ctrl.Call(m, "GetFileIDPath", ctx, fileID)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetFileIDPath indicates an expected call of GetFileIDPath.
-func (mr *MockLogicMockRecorder) GetFileIDPath(fileID interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) GetFileIDPath(ctx, fileID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileIDPath", reflect.TypeOf((*MockLogic)(nil).GetFileIDPath), fileID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileIDPath", reflect.TypeOf((*MockLogic)(nil).GetFileIDPath), ctx, fileID)
 }
 
 // GetFilePath mocks base method.
-func (m *MockLogic) GetFilePath(fileID string) (string, error) {
+func (m *MockLogic) GetFilePath(ctx context.Context, fileID string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetFilePath", fileID)
+	ret := m.ctrl.Call(m, "GetFilePath", ctx, fileID)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetFilePath indicates an expected call of GetFilePath.
-func (mr *MockLogicMockRecorder) GetFilePath(fileID interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) GetFilePath(ctx, fileID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFilePath", reflect.TypeOf((*MockLogic)(nil).GetFilePath), fileID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFilePath", reflect.TypeOf((*MockLogic)(nil).GetFilePath), ctx, fileID)
 }
 
 // GetFileURL mocks base method.
-func (m *MockLogic) GetFileURL(key string) (string, error) {
+func (m *MockLogic) GetFileURL(ctx context.Context, key string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetFileURL", key)
+	ret := m.ctrl.Call(m, "GetFileURL", ctx, key)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetFileURL indicates an expected call of GetFileURL.
-func (mr *MockLogicMockRecorder) GetFileURL(key interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) GetFileURL(ctx, key interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileURL", reflect.TypeOf((*MockLogic)(nil).GetFileURL), key)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileURL", reflect.TypeOf((*MockLogic)(nil).GetFileURL), ctx, key)
 }
 
 // InitKnowledgeDir mocks base method.
-func (m *MockLogic) InitKnowledgeDir(userID uint) (string, error) {
+func (m *MockLogic) InitKnowledgeDir(ctx context.Context, suserID uint) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InitKnowledgeDir", userID)
+	ret := m.ctrl.Call(m, "InitKnowledgeDir", ctx, suserID)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // InitKnowledgeDir indicates an expected call of InitKnowledgeDir.
-func (mr *MockLogicMockRecorder) InitKnowledgeDir(userID interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) InitKnowledgeDir(ctx, suserID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitKnowledgeDir", reflect.TypeOf((*MockLogic)(nil).InitKnowledgeDir), userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InitKnowledgeDir", reflect.TypeOf((*MockLogic)(nil).InitKnowledgeDir), ctx, suserID)
 }
 
 // PageList mocks base method.
-func (m *MockLogic) PageList(userID uint, parentID *string, page, pageSize int, sort string) (int64, []file.File, error) {
+func (m *MockLogic) PageList(ctx context.Context, userID uint, parentID *string, page, pageSize int, sort string) (int64, []file.File, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PageList", userID, parentID, page, pageSize, sort)
+	ret := m.ctrl.Call(m, "PageList", ctx, userID, parentID, page, pageSize, sort)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].([]file.File)
 	ret2, _ := ret[2].(error)
@@ -179,29 +180,29 @@ func (m *MockLogic) PageList(userID uint, parentID *string, page, pageSize int, 
 }
 
 // PageList indicates an expected call of PageList.
-func (mr *MockLogicMockRecorder) PageList(userID, parentID, page, pageSize, sort interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) PageList(ctx, userID, parentID, page, pageSize, sort interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PageList", reflect.TypeOf((*MockLogic)(nil).PageList), userID, parentID, page, pageSize, sort)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PageList", reflect.TypeOf((*MockLogic)(nil).PageList), ctx, userID, parentID, page, pageSize, sort)
 }
 
 // Rename mocks base method.
-func (m *MockLogic) Rename(userID uint, fileID, newName string) error {
+func (m *MockLogic) Rename(ctx context.Context, userID uint, fileID, newName string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Rename", userID, fileID, newName)
+	ret := m.ctrl.Call(m, "Rename", ctx, userID, fileID, newName)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Rename indicates an expected call of Rename.
-func (mr *MockLogicMockRecorder) Rename(userID, fileID, newName interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) Rename(ctx, userID, fileID, newName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rename", reflect.TypeOf((*MockLogic)(nil).Rename), userID, fileID, newName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rename", reflect.TypeOf((*MockLogic)(nil).Rename), ctx, userID, fileID, newName)
 }
 
 // SearchList mocks base method.
-func (m *MockLogic) SearchList(userID uint, key string, page, size int, sort string) (int64, []file.File, error) {
+func (m *MockLogic) SearchList(ctx context.Context, userID uint, key string, page, size int, sort string) (int64, []file.File, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SearchList", userID, key, page, size, sort)
+	ret := m.ctrl.Call(m, "SearchList", ctx, userID, key, page, size, sort)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].([]file.File)
 	ret2, _ := ret[2].(error)
@@ -209,22 +210,22 @@ func (m *MockLogic) SearchList(userID uint, key string, page, size int, sort str
 }
 
 // SearchList indicates an expected call of SearchList.
-func (mr *MockLogicMockRecorder) SearchList(userID, key, page, size, sort interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) SearchList(ctx, userID, key, page, size, sort interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchList", reflect.TypeOf((*MockLogic)(nil).SearchList), userID, key, page, size, sort)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchList", reflect.TypeOf((*MockLogic)(nil).SearchList), ctx, userID, key, page, size, sort)
 }
 
 // UploadFile mocks base method.
-func (m *MockLogic) UploadFile(userID uint, fileHeader *multipart.FileHeader, file multipart.File, parentID string) (string, error) {
+func (m *MockLogic) UploadFile(ctx context.Context, userID uint, fileHeader *multipart.FileHeader, file multipart.File, parentID string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UploadFile", userID, fileHeader, file, parentID)
+	ret := m.ctrl.Call(m, "UploadFile", ctx, userID, fileHeader, file, parentID)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UploadFile indicates an expected call of UploadFile.
-func (mr *MockLogicMockRecorder) UploadFile(userID, fileHeader, file, parentID interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) UploadFile(ctx, userID, fileHeader, file, parentID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadFile", reflect.TypeOf((*MockLogic)(nil).UploadFile), userID, fileHeader, file, parentID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadFile", reflect.TypeOf((*MockLogic)(nil).UploadFile), ctx, userID, fileHeader, file, parentID)
 }

@@ -1,6 +1,8 @@
 package file
 
 import (
+	"context"
+
 	"github.com/hildam/AI-Cloud-Drive/logic/file"
 	"github.com/labstack/echo/v4"
 )
@@ -9,9 +11,9 @@ type fileSerivce struct {
 	fileLogic file.Logic
 }
 
-func NewFileService() *fileSerivce {
+func NewFileService(ctx context.Context) *fileSerivce {
 	return &fileSerivce{
-		fileLogic: file.NewFileLogic(),
+		fileLogic: file.NewFileLogic(ctx),
 	}
 }
 

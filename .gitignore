@@ -64,10 +64,10 @@ config.ini
 config.hcl
 config.props
 config.properties
-eino-agent/config.yaml
-eino-agent/config.yml
-eino-agent/config.json
-eino-agent/config.toml
+config/config.yaml
+config/config.yml
+config/config.json
+config/config.toml
 
 # 明确说明不排除 config 目录和示例文件
 !config/

@@ -24,7 +24,7 @@ func Init() error {
 
 	// 初始化日志
 	if err := logger.Init(cfg.Log); err != nil {
-		return fmt.Errorf("Init logger failed, err: %v", err)
+		return fmt.Errorf("Init logger failed, err: %+v", err)
 	}
 	return nil
 }

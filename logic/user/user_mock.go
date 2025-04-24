@@ -5,6 +5,7 @@
 package user
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -35,30 +36,30 @@ func (m *MockLogic) EXPECT() *MockLogicMockRecorder {
 }
 
 // Login mocks base method.
-func (m *MockLogic) Login(req *LoginReq) (*LoginRsp, error) {
+func (m *MockLogic) Login(ctx context.Context, req *LoginReq) (*LoginRsp, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Login", req)
+	ret := m.ctrl.Call(m, "Login", ctx, req)
 	ret0, _ := ret[0].(*LoginRsp)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Login indicates an expected call of Login.
-func (mr *MockLogicMockRecorder) Login(req interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) Login(ctx, req interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockLogic)(nil).Login), req)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockLogic)(nil).Login), ctx, req)
 }
 
 // Register mocks base method.
-func (m *MockLogic) Register(user *user.User) error {
+func (m *MockLogic) Register(ctx context.Context, user *user.User) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Register", user)
+	ret := m.ctrl.Call(m, "Register", ctx, user)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Register indicates an expected call of Register.
-func (mr *MockLogicMockRecorder) Register(user interface{}) *gomock.Call {
+func (mr *MockLogicMockRecorder) Register(ctx, user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockLogic)(nil).Register), user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockLogic)(nil).Register), ctx, user)
 }

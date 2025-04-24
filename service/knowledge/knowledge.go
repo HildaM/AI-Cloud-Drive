@@ -1,6 +1,8 @@
 package knowledge
 
 import (
+	"context"
+
 	"github.com/hildam/AI-Cloud-Drive/logic/file"
 	"github.com/hildam/AI-Cloud-Drive/logic/knowledge"
 	"github.com/labstack/echo/v4"
@@ -11,10 +13,10 @@ type knowledgeService struct {
 	fileLogic      file.Logic
 }
 
-func NewKnowledgeService() *knowledgeService {
+func NewKnowledgeService(ctx context.Context) *knowledgeService {
 	return &knowledgeService{
 		knowledgeLogic: knowledge.NewKnowledgeLogic(),
-		fileLogic:      file.NewFileLogic(),
+		fileLogic:      file.NewFileLogic(ctx),
 	}
 }
 

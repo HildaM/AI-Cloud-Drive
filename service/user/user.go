@@ -1,6 +1,8 @@
 package user
 
 import (
+	"context"
+
 	"github.com/hildam/AI-Cloud-Drive/logic/user"
 	"github.com/labstack/echo/v4"
 )
@@ -9,9 +11,9 @@ type userSerivce struct {
 	userLogic user.Logic
 }
 
-func NewUserService() *userSerivce {
+func NewUserService(ctx context.Context) *userSerivce {
 	return &userSerivce{
-		userLogic: user.NewUserLogic(),
+		userLogic: user.NewUserLogic(ctx),
 	}
 }
 

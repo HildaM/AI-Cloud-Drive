@@ -1,18 +1,20 @@
 package file
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"github.com/hildam/AI-Cloud-Drive/conf"
-	"github.com/hildam/AI-Cloud-Drive/dao"
-	"github.com/hildam/AI-Cloud-Drive/dao/file"
-	"github.com/hildam/AI-Cloud-Drive/logic/storage"
 	"io"
 	"log"
 	"mime"
 	"mime/multipart"
 	"path/filepath"
 	"time"
+
+	"github.com/hildam/AI-Cloud-Drive/conf"
+	"github.com/hildam/AI-Cloud-Drive/dao"
+	"github.com/hildam/AI-Cloud-Drive/dao/file"
+	"github.com/hildam/AI-Cloud-Drive/logic/storage"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -23,8 +25,8 @@ type fileLogic struct {
 	storageDriver storage.Driver
 }
 
-func NewFileLogic() Logic {
-	storageDriver, err := storage.NewDriver(conf.GetCfg().Storage)
+func NewFileLogic(ctx context.Context) Logic {
+	storageDriver, err := storage.NewDriver(ctx, conf.GetCfg().Storage)
 	if err != nil {
 		log.Fatalf("初始化存储驱动失败: %v", err)
 	}
@@ -35,7 +37,7 @@ func NewFileLogic() Logic {
 	}
 }
 
-func (fs *fileLogic) UploadFile(userID uint, fileHeader *multipart.FileHeader, f multipart.File, parentID string) (string, error) {
+func (fs *fileLogic) UploadFile(ctx context.Context, userID uint, fileHeader *multipart.FileHeader, f multipart.File, parentID string) (string, error) {
 	fileID := GenerateUUID()
 
 	ext := filepath.Ext(fileHeader.Filename)
@@ -67,7 +69,7 @@ func (fs *fileLogic) UploadFile(userID uint, fileHeader *multipart.FileHeader, f
 	}
 	//
 	// Upload file to storage
-	if err := fs.storageDriver.Upload(fileData, newFile.StorageKey, mimeType); err != nil {
+	if err := fs.storageDriver.Upload(ctx, fileData, newFile.StorageKey, mimeType); err != nil {
 		return "", fmt.Errorf("failed to upload file: %w", err)
 	}
 
@@ -79,15 +81,15 @@ func (fs *fileLogic) UploadFile(userID uint, fileHeader *multipart.FileHeader, f
 	return fileID, nil
 }
 
-func (fs *fileLogic) GetFileURL(key string) (string, error) {
-	return fs.storageDriver.GetURL(key)
+func (fs *fileLogic) GetFileURL(ctx context.Context, key string) (string, error) {
+	return fs.storageDriver.GetURL(ctx, key)
 }
 
 //func (fs *fileLogic) ListFiles(userID uint, parentID *string) ([]file.File, error) {
 //	return fs.fileDao.GetFilesByParentID(userID, parentID)
 //}
 
-func (fs *fileLogic) CreateFolder(userID uint, name string, parentID *string) error {
+func (fs *fileLogic) CreateFolder(ctx context.Context, userID uint, name string, parentID *string) error {
 	var parent *file.File
 
 	// 父目录验证
@@ -134,7 +136,7 @@ func (fs *fileLogic) CreateFolder(userID uint, name string, parentID *string) er
 	return nil
 }
 
-func (fs *fileLogic) Rename(userID uint, fileID string, newName string) error {
+func (fs *fileLogic) Rename(ctx context.Context, userID uint, fileID string, newName string) error {
 
 	// 根据id获取file信息
 	file, err := fs.fileDao.GetFileMetaByFileID(fileID)
@@ -156,7 +158,7 @@ func (fs *fileLogic) Rename(userID uint, fileID string, newName string) error {
 	}
 	return nil
 }
-func (fs *fileLogic) DownloadFile(fileID string) (*file.File, []byte, error) {
+func (fs *fileLogic) DownloadFile(ctx context.Context, fileID string) (*file.File, []byte, error) {
 	// 1. 验证文件权限并获取元数据
 	fileMeta, err := fs.fileDao.GetFileMetaByFileID(fileID)
 	if err != nil {
@@ -165,7 +167,7 @@ func (fs *fileLogic) DownloadFile(fileID string) (*file.File, []byte, error) {
 	log.Printf("storagekey为：%s", fileMeta.StorageKey)
 
 	// 2. 从存储驱动获取文件内容
-	fileData, err := fs.storageDriver.Download(fileMeta.StorageKey)
+	fileData, err := fs.storageDriver.Download(ctx, fileMeta.StorageKey)
 	if err != nil {
 		return nil, nil, fmt.Errorf("文件下载失败: %w", err)
 	}
@@ -178,7 +180,7 @@ func (fs *fileLogic) DownloadFile(fileID string) (*file.File, []byte, error) {
 	return fileMeta, fileData, nil
 }
 
-func (fs *fileLogic) DeleteFileOrFolder(userID uint, fileID string) error {
+func (fs *fileLogic) DeleteFileOrFolder(ctx context.Context, userID uint, fileID string) error {
 	file, err := fs.fileDao.GetFileMetaByFileID(fileID)
 	if err != nil {
 		return fmt.Errorf("获取文件信息失败：%v", err)
@@ -191,7 +193,7 @@ func (fs *fileLogic) DeleteFileOrFolder(userID uint, fileID string) error {
 			return fmt.Errorf("获取子文件失败：%v", err)
 		}
 		for _, child := range children {
-			if err := fs.DeleteFileOrFolder(userID, child.ID); err != nil {
+			if err := fs.DeleteFileOrFolder(ctx, userID, child.ID); err != nil {
 				return err
 			}
 		}
@@ -199,7 +201,7 @@ func (fs *fileLogic) DeleteFileOrFolder(userID uint, fileID string) error {
 	//删除数据库
 	if !file.IsDir {
 		storageKey := file.StorageKey
-		if err := fs.storageDriver.Delete(storageKey); err != nil {
+		if err := fs.storageDriver.Delete(ctx, storageKey); err != nil {
 			return err
 		}
 	}
@@ -212,7 +214,7 @@ func (fs *fileLogic) DeleteFileOrFolder(userID uint, fileID string) error {
 	return nil
 }
 
-func (fs *fileLogic) PageList(userID uint, parentID *string, page int, pageSize int, sort string) (int64, []file.File, error) {
+func (fs *fileLogic) PageList(ctx context.Context, userID uint, parentID *string, page int, pageSize int, sort string) (int64, []file.File, error) {
 	total, err := fs.fileDao.CountFilesByParentID(parentID, userID)
 	if err != nil {
 		return 0, nil, err
@@ -225,7 +227,7 @@ func (fs *fileLogic) PageList(userID uint, parentID *string, page int, pageSize 
 	return total, files, nil
 }
 
-func (fs *fileLogic) SearchList(userID uint, key string, page int, pageSize int, sort string) (int64, []file.File, error) {
+func (fs *fileLogic) SearchList(ctx context.Context, userID uint, key string, page int, pageSize int, sort string) (int64, []file.File, error) {
 
 	total, err := fs.fileDao.CountFilesByKeyword(key, userID)
 	if err != nil {
@@ -240,7 +242,7 @@ func (fs *fileLogic) SearchList(userID uint, key string, page int, pageSize int,
 }
 
 // 批量移动
-func (fs *fileLogic) BatchMoveFiles(userID uint, fileIDs []string, targetParentID string) error {
+func (fs *fileLogic) BatchMoveFiles(ctx context.Context, userID uint, fileIDs []string, targetParentID string) error {
 	// 验证目标文件夹是否存在且合法
 	if targetParentID != "" {
 		targetFolder, err := fs.fileDao.GetFileMetaByFileID(targetParentID)
@@ -283,7 +285,7 @@ func (fs *fileLogic) BatchMoveFiles(userID uint, fileIDs []string, targetParentI
 
 		// 检查是否将文件夹移动到其子文件夹中
 		if file.IsDir && targetParentID != "" {
-			if err := fs.checkCircularReference(fileID, targetParentID); err != nil {
+			if err := fs.checkCircularReference(ctx, fileID, targetParentID); err != nil {
 				return err
 			}
 		}
@@ -318,7 +320,7 @@ func (fs *fileLogic) BatchMoveFiles(userID uint, fileIDs []string, targetParentI
 	return nil
 }
 
-func (fs *fileLogic) checkCircularReference(sourceID, targetParentID string) error {
+func (fs *fileLogic) checkCircularReference(ctx context.Context, sourceID, targetParentID string) error {
 	current := targetParentID
 	visited := make(map[string]bool)
 
@@ -354,7 +356,7 @@ func GenerateStorageKey(userID uint, fileID string) string {
 }
 
 // GetFilePath 通过递归查询生成文件路径
-func (fs *fileLogic) GetFilePath(fileID string) (string, error) {
+func (fs *fileLogic) GetFilePath(ctx context.Context, fileID string) (string, error) {
 	file, err := fs.fileDao.GetFileMetaByFileID(fileID)
 	if err != nil {
 		return "", err
@@ -376,7 +378,7 @@ func (fs *fileLogic) GetFilePath(fileID string) (string, error) {
 }
 
 // GetFileIDPath 生成基于文件ID的路径
-func (fs *fileLogic) GetFileIDPath(fileID string) (string, error) {
+func (fs *fileLogic) GetFileIDPath(ctx context.Context, fileID string) (string, error) {
 	file, err := fs.fileDao.GetFileMetaByFileID(fileID)
 	if err != nil {
 		return "", err
@@ -397,7 +399,7 @@ func (fs *fileLogic) GetFileIDPath(fileID string) (string, error) {
 	return "/root/" + path, nil
 }
 
-func (fs *fileLogic) GetFileByID(fileID string) (*file.File, error) {
+func (fs *fileLogic) GetFileByID(ctx context.Context, fileID string) (*file.File, error) {
 	file, err := fs.fileDao.GetFileMetaByFileID(fileID)
 	if err != nil {
 		return nil, err
@@ -405,7 +407,7 @@ func (fs *fileLogic) GetFileByID(fileID string) (*file.File, error) {
 	return file, nil
 }
 
-func (fs *fileLogic) InitKnowledgeDir(userID uint) (string, error) {
+func (fs *fileLogic) InitKnowledgeDir(ctx context.Context, userID uint) (string, error) {
 	f, err := fs.fileDao.GetDocumentDir(userID)
 	if err != nil {
 		// 只有在记录不存在时才创建新目录

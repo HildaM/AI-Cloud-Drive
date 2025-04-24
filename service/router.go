@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+
 	"github.com/hildam/AI-Cloud-Drive/service/file"
 	"github.com/hildam/AI-Cloud-Drive/service/knowledge"
 	"github.com/hildam/AI-Cloud-Drive/service/middleware"
@@ -10,11 +12,12 @@ import (
 
 // SetRouter 设置路由
 func SetRouter(e *echo.Echo) {
+	ctx := context.Background()
 	g := e.Group("/api")
 
 	// user 用户接口
 	userGroup := g.Group("/users")
-	userSvr := user.NewUserService()
+	userSvr := user.NewUserService(ctx)
 	{
 		userGroup.POST("/register", userSvr.Register)
 		userGroup.POST("/login", userSvr.Login)
@@ -23,7 +26,7 @@ func SetRouter(e *echo.Echo) {
 	// 文件接口
 	fileGroup := g.Group("/files")
 	fileGroup.Use(middleware.JWTAuth()) // 启用认证
-	fileSvr := file.NewFileService()
+	fileSvr := file.NewFileService(ctx)
 	{
 		fileGroup.POST("/upload", fileSvr.Upload)
 		fileGroup.GET("/page", fileSvr.PageList)
@@ -40,7 +43,7 @@ func SetRouter(e *echo.Echo) {
 	// 知识库接口
 	knowledgeGroup := g.Group("/knowledge")
 	knowledgeGroup.Use(middleware.JWTAuth()) // 启用认证
-	knowledgeSvr := knowledge.NewKnowledgeService()
+	knowledgeSvr := knowledge.NewKnowledgeService(ctx)
 	{
 		knowledgeGroup.POST("/create", knowledgeSvr.Create)
 		knowledgeGroup.DELETE("/delete", knowledgeSvr.Delete)

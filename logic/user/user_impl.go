@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"errors"
 
 	"github.com/hildam/AI-Cloud-Drive/conf"
@@ -14,13 +15,13 @@ type userLogic struct {
 	userDao user.Dao
 }
 
-func NewUserLogic() Logic {
+func NewUserLogic(ctx context.Context) Logic {
 	return &userLogic{
 		userDao: user.NewUserDao(dao.GetDb()),
 	}
 }
 
-func (s *userLogic) Register(u *user.User) error {
+func (s *userLogic) Register(ctx context.Context, u *user.User) error {
 	// 检查
 	userExists, err := s.userDao.CheckIfExist("username", u.Username)
 	if err != nil {
@@ -57,7 +58,7 @@ func (s *userLogic) Register(u *user.User) error {
 	return nil
 }
 
-func (s *userLogic) Login(req *LoginReq) (*LoginRsp, error) {
+func (s *userLogic) Login(ctx context.Context, req *LoginReq) (*LoginRsp, error) {
 	user, err := s.userDao.GetUserByName(req.Username)
 	if err != nil {
 		return nil, err

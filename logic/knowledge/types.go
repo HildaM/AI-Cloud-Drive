@@ -1,10 +1,12 @@
 package knowledge
 
-import "github.com/hildam/AI-Cloud-Drive/dao/knowledge"
+import (
+	"github.com/hildam/AI-Cloud-Drive/dao/milvus"
+)
 
 type ChatResponse struct {
-	Response   string            `json:"response"`
-	References []knowledge.Chunk `json:"references"`
+	Response   string         `json:"response"`
+	References []milvus.Chunk `json:"references"`
 }
 
 type ChatRequest struct {

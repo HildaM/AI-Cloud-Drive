@@ -5,6 +5,7 @@ import (
 
 	"github.com/hildam/AI-Cloud-Drive/common/logger"
 	"github.com/hildam/AI-Cloud-Drive/conf"
+	"github.com/hildam/AI-Cloud-Drive/dao"
 	"github.com/hildam/AI-Cloud-Drive/logic/tracelog"
 	"github.com/hildam/AI-Cloud-Drive/service"
 	"github.com/hildam/AI-Cloud-Drive/service/middleware"
@@ -14,8 +15,11 @@ import (
 
 func main() {
 	// 初始化配置
-	if err := conf.Init(); err != nil {
-		log.Fatalf("Failed to initialize config, err: %v", err)
+	funcs := []func() error{conf.Init, dao.InitDb, dao.InitMilvus}
+	for _, f := range funcs {
+		if err := f(); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// 初始化echo框架

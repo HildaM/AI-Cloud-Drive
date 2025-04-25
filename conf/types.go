@@ -1,15 +1,22 @@
 package conf
 
 import (
+	"fmt"
+
 	"github.com/hildam/AI-Cloud-Drive/common/logger"
 	"github.com/milvus-io/milvus-sdk-go/v2/entity"
 )
 
 // 存储类型枚举
 const (
+	// 存储类型
 	LocalStorageType = "local" // 本地文件存储
 	OssStorageType   = "oss"   // 阿里云oss
 	MinioStorageType = "minio" // minio存储
+
+	// 嵌入模型类型
+	RemoteEmbeddingType = "remote" // 远程嵌入模型
+	OllamaEmbeddingType = "ollama" // Ollama嵌入模型
 )
 
 // AppConfig 应用配置
@@ -194,22 +201,61 @@ type RAGConfig struct {
 // EmbeddingConfig 嵌入模型配置
 type EmbeddingConfig struct {
 	// 使用哪种嵌入模型: remote 或 ollama
-	Service string                `mapstructure:"service"` // 选择的服务
-	Remote  RemoteEmbeddingConfig `mapstructure:"remote"`  // 远程嵌入模型配置
-	Ollama  OllamaEmbeddingConfig `mapstructure:"ollama"`  // Ollama嵌入模型配置
+	Type   string                 `mapstructure:"type"`   // 服务类型
+	Remote *RemoteEmbeddingConfig `mapstructure:"remote"` // 远程嵌入模型配置
+	Ollama *OllamaEmbeddingConfig `mapstructure:"ollama"` // Ollama嵌入模型配置
+}
+
+// CheckCfg 检查参数
+func (e *EmbeddingConfig) CheckCfg() error {
+	if e.Type == "" {
+		return fmt.Errorf("embedding type is required")
+	}
+	return nil
 }
 
 // RemoteEmbeddingConfig 远程嵌入模型配置
 type RemoteEmbeddingConfig struct {
-	APIKey  string `mapstructure:"api_key"`  // API密钥
-	Model   string `mapstructure:"model"`    // 模型
-	BaseURL string `mapstructure:"base_url"` // 基础URL
+	APIKey    string `mapstructure:"api_key"`
+	Model     string `mapstructure:"model"`
+	BaseURL   string `mapstructure:"base_url"`
+	Timeout   int    `mapstructure:"timeout"`
+	Dimension int    `mapstructure:"dimension"`
 }
+
+var (
+	defaultBaseURL = "http://localhost:11434"
+	defaultTimeout = 10
+	defaultModel   = "nomic-embed-text:latest"
+	defaultDim     = 1024
+)
 
 // OllamaEmbeddingConfig Ollama嵌入模型配置
 type OllamaEmbeddingConfig struct {
-	URL   string `mapstructure:"url"`   // URL
-	Model string `mapstructure:"model"` // 模型
+	Url       string `mapstructure:"url"`
+	Model     string `mapstructure:"model"`
+	Dimension int    `mapstructure:"dimension"`
+	Timeout   int    `mapstructure:"timeout"`
+}
+
+// CheckCfg 检查配置
+func (o *OllamaEmbeddingConfig) CheckCfg() {
+	// 检查配置
+	if len(o.Url) == 0 {
+		o.Url = defaultBaseURL
+	}
+
+	if o.Timeout == 0 {
+		o.Timeout = defaultTimeout
+	}
+
+	if len(o.Model) == 0 {
+		o.Model = defaultModel
+	}
+
+	if o.Dimension <= 0 {
+		o.Dimension = defaultDim
+	}
 }
 
 // LLMConfig 语言模型配置

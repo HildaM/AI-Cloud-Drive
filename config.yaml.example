@@ -87,6 +87,8 @@ embedding:
   ollama:
     url: "http://localhost:11434"
     model: "mxbai-embed-large"
+    timeout: 10   # 超时时间，时间单位：s
+    dimensions: 1024 # 嵌入向量维度，如不指定则使用模型默认值
 
 # 语言模型配置
 llm:

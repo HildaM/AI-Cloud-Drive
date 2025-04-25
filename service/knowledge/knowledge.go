@@ -15,7 +15,7 @@ type knowledgeService struct {
 
 func NewKnowledgeService(ctx context.Context) *knowledgeService {
 	return &knowledgeService{
-		knowledgeLogic: knowledge.NewKnowledgeLogic(),
+		knowledgeLogic: knowledge.NewKnowledgeLogic(ctx),
 		fileLogic:      file.NewFileLogic(ctx),
 	}
 }
